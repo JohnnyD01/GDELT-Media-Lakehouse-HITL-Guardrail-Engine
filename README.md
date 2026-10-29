@@ -106,7 +106,7 @@ src/
 docs/
   power bi_dashboard.png
   streamlit_overview.png
-  streamlit_hit.png                
+  streamlit_hitl.png                
 data/                Local outputs (gitignored)
 .env.example         Template for AWS credentials
 requirements/
@@ -128,7 +128,7 @@ Volume vs. average tone with a dashed -2.0 risk threshold, KPI cards, and a late
 ### Human-in-the-loop review queue
 Claims below the 0.85 confidence threshold are routed here. The queue items are demo claims.
 
-![HITL review queue](docs/streamlit_hitl_queue.png)
+![HITL review queue](docs/streamlit_hitl.png)
 
 ## Known limitations and next steps
 
