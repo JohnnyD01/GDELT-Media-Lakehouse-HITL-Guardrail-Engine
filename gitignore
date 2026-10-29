@@ -1,0 +1,28 @@
+# Secrets - never commit
+.env
+*.env
+!.env.example
+
+# Local data and GDELT downloads
+data/
+*.zip
+*.CSV
+*.csv
+!docs/*.csv
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# DuckDB local files
+*.duckdb
+*.db
