@@ -84,35 +84,51 @@ The trade-off is explicit: I gave up some model quality for a pipeline anyone ca
 ```bash
 pip install duckdb streamlit python-dotenv boto3 pandas pyarrow requests transformers torch
 
-# .env (never commit this file)
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
-AWS_REGION=us-east-1
-PRIVATE_S3_BUCKET=your-bucket
+# Copy .env.example to .env in the project root and add your AWS keys and bucket name
+# (never commit .env)
 
-python ingest_http.py        # download GDELT, convert to Parquet, upload to S3
-python export_powerbi.py     # daily summary CSV for Power BI
-python run_pipeline.py       # guardrail evaluation + refresh export
-streamlit run app.py         # control room
+python src/ingest_http.py        # download GDELT, convert to Parquet, upload to S3
+python src/export_powerbi.py     # daily summary CSV for Power BI (writes data/)
+python src/run_pipeline.py       # guardrail evaluation + refresh export
+streamlit run src/app.py         # control room
 ```
 
 ## Repo layout
 
 ```
-app.py             Streamlit control room (lakehouse overview + HITL queue)
-ingest_http.py     GDELT -> Parquet -> S3, partitioned by year/month/day
-database.py        DuckDB connection + daily/monthly reports
-guardrail.py       Claim-vs-telemetry scoring and routing
-export_powerbi.py  Daily summary export for the executive dashboard
-run_pipeline.py    End-to-end runner
-data/              Local outputs (gitignored)
+src/
+  app.py             Streamlit control room (lakehouse overview + HITL queue)
+  ingest_http.py     GDELT -> Parquet -> S3, partitioned by year/month/day
+  database.py        DuckDB connection + daily/monthly reports
+  guardrail.py       Claim-vs-telemetry scoring and routing
+  export_powerbi.py  Daily summary export for the executive dashboard
+  run_pipeline.py    End-to-end runner
+docs/
+  power bi_dashboard.png
+  streamlit_overview.png
+  streamlit_hit.png                
+data/                Local outputs (gitignored)
+.env.example         Template for AWS credentials
+requirements/
+  base.txt
 ```
 
-## Dashboard
+Run all commands from the project root so `data/` and `.env` resolve correctly.
 
-Typography is Segoe UI throughout, with a dark-slate KPI palette and crimson reserved for risk. The combo chart shows event volume against average tone with a dashed risk-threshold line, plus KPI cards for total events, range-average tone, unique sources, and a latest-day sentiment index.
+## Screenshots
 
-*Add screenshots here: `docs/dashboard.png`, `docs/streamlit_queue.png`.*
+### Power BI executive dashboard
+Volume vs. average tone with a dashed -2.0 risk threshold, KPI cards, and a latest-day risk index that turns crimson below the threshold.
+
+![Power BI dashboard](docs/powerbi_dashboard.png)
+
+### Streamlit control room
+![Lakehouse overview](docs/streamlit_overview.png)
+
+### Human-in-the-loop review queue
+Claims below the 0.85 confidence threshold are routed here. The queue items are demo claims.
+
+![HITL review queue](docs/streamlit_hitl_queue.png)
 
 ## Known limitations and next steps
 
